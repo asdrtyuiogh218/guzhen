@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二十四节令鼓 · 鼓阵编排</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500&display=swap');
+
+  :root {
+    --ink: #1a1208;
+    --paper: #f7f3ec;
+    --warm-mid: #e8dfc8;
+    --drum-red: #c0392b;
+    --drum-green: #27ae60;
+    --drum-blue: #2980b9;
+    --drum-black: #2c2c2c;
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --panel-bg: #faf7f0;
+    --border: #c8b89a;
+    --shadow: rgba(26,18,8,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--gold);
+  }
+  header .title-block { display:flex; align-items:baseline; gap:12px; }
+  header h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+    color: var(--gold-light);
+  }
+  header .sub {
+    font-size: .78rem;
+    color: #a09070;
+    letter-spacing: .06em;
+  }
+  header .actions { display:flex; gap:10px; }
+  .btn {
+    padding: 7px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: .82rem;
+    font-weight: 500;
+    transition: all .15s;
+  }
+  .btn-gold {
+    background: var(--gold);
+    color: #fff;
+  }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid #6a5a3a;
+    color: #c8b07a;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold-light); }
+  .btn-danger {
+    background: transparent;
+    border: 1.5px solid #7a3a3a;
+    color: #c08080;
+  }
+  .btn-danger:hover { background: #3a1a1a; color: #e09090; }
+
+  /* ── LAYOUT ── */
+  .workspace {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left-panel {
+    width: 220px;
+    min-width: 220px;
+    background: var(--panel-bg);
+    border-right: 1.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow-y: auto;
+  }
+
+  .panel-section {
+    padding: 16px 14px 12px;
+    border-bottom: 1px solid var(--warm-mid);
+  }
+  .panel-section h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  /* Drum type buttons */
+  .drum-palette {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .drum-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: grab;
+    border: 1.5px solid transparent;
+    transition: all .15s;
+    user-select: none;
+  }
+  .drum-item:hover { background: var(--warm-mid); border-color: var(--border); }
+  .drum-item.active { border-color: var(--gold); background: #f0e8d0; }
+  .drum-item .icon {
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .drum-item .icon svg { width: 100%; height: 100%; }
+  .drum-item .name { font-size: .85rem; font-weight: 500; }
+
+  /* Formation presets */
+  .preset-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .preset-btn {
+    width: 100%;
+    padding: 7px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: left;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: .82rem;
+    color: var(--ink);
+    transition: all .15s;
+  }
+  .preset-btn:hover { background: var(--warm-mid); border-color: var(--gold); }
+
+  /* Saved formations */
+  .saved-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .saved-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .saved-item button.load {
+    flex: 1;
+    padding: 5px 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: .8rem;
+    text-align: left;
+    color: var(--ink);
+    transition: all .15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .saved-item button.load:hover { background: var(--warm-mid); }
+  .saved-item button.del {
+    padding: 4px 7px;
+    background: transparent;
+    border: 1px solid #c8a0a0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: .75rem;
+    color: #b06060;
+    transition: all .15s;
+  }
+  .saved-item button.del:hover { background: #f0d8d8; }
+
+  /* ── MAIN CANVAS AREA ── */
+  .canvas-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .canvas-toolbar {
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .canvas-toolbar label {
+    font-size: .8rem;
+    color: #7a6a4a;
+    margin-right: 4px;
+  }
+  .canvas-toolbar input[type=text] {
+    border: 1px solid var(--border);
+    background: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: .85rem;
+    font-family: 'Noto Sans SC', sans-serif;
+    width: 160px;
+    color: var(--ink);
+  }
+  .canvas-toolbar .sep {
+    width: 1px; height: 22px;
+    background: var(--border);
+  }
+  .mode-btn {
+    padding: 5px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    font-size: .8rem;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink);
+    transition: all .15s;
+  }
+  .mode-btn.active { background: var(--gold); border-color: var(--gold); color: #fff; }
+  .mode-btn:hover:not(.active) { background: var(--warm-mid); }
+
+  .canvas-scroll {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 30px 24px;
+    background: #ede8dc url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='.8' fill='%23c8b89a55'/%3E%3C/svg%3E");
+  }
+
+  /* ── STAGE ── */
+  #stage-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  #stage {
+    position: relative;
+    background: #fff;
+    border: 3px solid var(--ink);
+    cursor: crosshair;
+    overflow: hidden;
+  }
+  #stage.mode-select { cursor: default; }
+  #stage.mode-erase  { cursor: cell; }
+
+  .stage-label {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: .1em;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .audience-arrow {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  /* center line */
+  #center-line {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: rgba(44,44,44,.15);
+    pointer-events: none;
+  }
+  #center-label {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: .7rem;
+    color: #4a90d9;
+    pointer-events: none;
+    letter-spacing: .06em;
+  }
+
+  /* grid overlay */
+  #grid-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  #grid-overlay.visible { opacity: 1; }
+
+  /* drum tokens on stage */
+  .drum-token {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: filter .1s;
+    user-select: none;
+  }
+  .drum-token:hover { filter: drop-shadow(0 0 5px rgba(184,134,11,.8)); }
+  .drum-token.selected { filter: drop-shadow(0 0 6px rgba(184,134,11,1)); }
+  .drum-token svg { display: block; }
+
+  /* selection rect */
+  #sel-rect {
+    position: absolute;
+    border: 1.5px dashed var(--gold);
+    background: rgba(184,134,11,.06);
+    pointer-events: none;
+    display: none;
+  }
+
+  /* ── RIGHT PANEL ── */
+  .right-panel {
+    width: 200px;
+    min-width: 200px;
+    background: var(--panel-bg);
+    border-left: 1.5px solid var(--border);
+    padding: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .legend {
+    padding: 16px 14px;
+    border-bottom: 1px solid var(--warm-mid);
+  }
+  .legend h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: .78rem;
+    letter-spacing: .14em;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 8px;
+    font-size: .83rem;
+  }
+  .legend-item .icon { width: 26px; height: 26px; display:flex; align-items:center; justify-content:center; }
+  .legend-item .icon svg { width:100%; height:100%; }
+
+  .stats-panel {
+    padding: 16px 14px;
+    border-bottom: 1px solid var(--warm-mid);
+  }
+  .stats-panel h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: .78rem;
+    letter-spacing: .14em;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: .82rem;
+  }
+  .stat-row .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    margin-right: 4px;
+    display: inline-block;
+  }
+  .stat-label { display:flex; align-items:center; }
+  .stat-count {
+    font-weight: 700;
+    font-family: 'Noto Serif SC', serif;
+    font-size: .95rem;
+  }
+
+  .notes-panel {
+    padding: 16px 14px;
+  }
+  .notes-panel h3 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: .78rem;
+    letter-spacing: .14em;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .notes-panel textarea {
+    width: 100%;
+    height: 100px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: .8rem;
+    resize: vertical;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--ink);
+    color: var(--gold-light);
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-size: .85rem;
+    border: 1px solid var(--gold);
+    transition: transform .3s;
+    pointer-events: none;
+    z-index: 999;
+    font-family: 'Noto Serif SC', serif;
+    letter-spacing: .06em;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,18,8,.55);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--panel-bg);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    min-width: 320px;
+    max-width: 90vw;
+  }
+  .modal h2 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .modal label { font-size: .83rem; display:block; margin-bottom:5px; color:#5a4a2a; }
+  .modal input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-size: .88rem;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink);
+    margin-bottom: 16px;
+    background: #fff;
+  }
+  .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
+
+  /* size controls */
+  .size-controls { display:flex; align-items:center; gap:8px; }
+  .size-controls input[type=number] {
+    width: 64px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: .82rem;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink);
+    background: #fff;
+  }
+  .size-controls span { font-size: .78rem; color: #7a6a4a; }
+
+  .grid-toggle { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:.82rem; }
+  .grid-toggle input { cursor:pointer; accent-color: var(--gold); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="title-block">
+    <h1>二十四节令鼓</h1>
+    <span class="sub">鼓阵编排系统</span>
+  </div>
+  <div class="actions">
+    <button class="btn btn-outline" onclick="openSaveModal()">💾 保存阵型</button>
+    <button class="btn btn-outline" onclick="exportPNG()">📷 导出图片</button>
+    <button class="btn btn-danger" onclick="clearStage()">✕ 清空</button>
+  </div>
+</header>
+
+<div class="workspace">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="panel-section">
+      <h3>鼓 种</h3>
+      <div class="drum-palette" id="drum-palette">
+        <!-- filled by JS -->
+      </div>
+    </div>
+    <div class="panel-section">
+      <h3>预设阵型</h3>
+      <div class="preset-list">
+        <button class="preset-btn" onclick="loadPreset('basic')">基础站位</button>
+        <button class="preset-btn" onclick="loadPreset('double')">双鼓站位</button>
+        <button class="preset-btn" onclick="loadPreset('liChao')">离巢阵型</button>
+        <button class="preset-btn" onclick="loadPreset('expand')">展翼阵型</button>
+      </div>
+    </div>
+    <div class="panel-section" style="flex:1">
+      <h3>已保存</h3>
+      <div class="saved-list" id="saved-list"></div>
+    </div>
+  </div>
+
+  <!-- CANVAS AREA -->
+  <div class="canvas-area">
+    <div class="canvas-toolbar">
+      <label>阵型名称：</label>
+      <input type="text" id="formation-name" value="离巢" />
+      <div class="sep"></div>
+      <label>舞台尺寸：</label>
+      <div class="size-controls">
+        <input type="number" id="stage-w" value="800" min="400" max="1400" step="50" onchange="resizeStage()"/>
+        <span>×</span>
+        <input type="number" id="stage-h" value="500" min="300" max="900" step="50" onchange="resizeStage()"/>
+        <span>px</span>
+      </div>
+      <div class="sep"></div>
+      <button class="mode-btn active" id="btn-place" onclick="setMode('place')">放置</button>
+      <button class="mode-btn" id="btn-select" onclick="setMode('select')">选择</button>
+      <button class="mode-btn" id="btn-erase" onclick="setMode('erase')">删除</button>
+      <div class="sep"></div>
+      <label class="grid-toggle">
+        <input type="checkbox" id="grid-check" onchange="toggleGrid(this.checked)"/>
+        网格对齐
+      </label>
+      <div class="sep"></div>
+      <button class="btn btn-outline" style="padding:5px 12px;font-size:.78rem" onclick="undo()">↩ 撤销</button>
+    </div>
+
+    <div class="canvas-scroll" id="canvas-scroll">
+      <div id="stage-wrapper">
+        <div class="stage-label" id="stage-title">离巢</div>
+
+        <!-- Audience arrows (decorative) -->
+        <svg class="audience-arrow" style="top:-2px;left:-2px;width:38px;height:44px" viewBox="0 0 38 44">
+          <path d="M19 42 L4 22 L12 22 L12 2 L26 2 L26 22 L34 22 Z" fill="none" stroke="#1a1208" stroke-width="2.5"/>
+        </svg>
+        <svg class="audience-arrow" id="arrow-right" style="top:-2px;right:-2px;width:38px;height:44px" viewBox="0 0 38 44">
+          <path d="M19 42 L4 22 L12 22 L12 2 L26 2 L26 22 L34 22 Z" fill="none" stroke="#1a1208" stroke-width="2.5"/>
+        </svg>
+
+        <div id="stage">
+          <div id="center-line"></div>
+          <div id="center-label">Center</div>
+          <canvas id="grid-overlay"></canvas>
+          <div id="sel-rect"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="legend">
+      <h3>图 例</h3>
+      <div id="legend-items"></div>
+    </div>
+    <div class="stats-panel">
+      <h3>统 计</h3>
+      <div id="stats"></div>
+      <div class="stat-row" style="margin-top:10px;border-top:1px solid var(--warm-mid);padding-top:8px">
+        <span style="font-size:.82rem;color:#5a4a2a">合计</span>
+        <span class="stat-count" id="total-count">0</span>
+      </div>
+    </div>
+    <div class="notes-panel">
+      <h3>备 注</h3>
+      <textarea placeholder="记录编排说明、走位提示..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Save Modal -->
+<div class="modal-overlay" id="save-modal">
+  <div class="modal">
+    <h2>保存阵型</h2>
+    <label>阵型名称</label>
+    <input type="text" id="save-name-input" />
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeSaveModal()">取消</button>
+      <button class="btn btn-gold" onclick="saveFormation()">保存</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast">已保存</div>
+
+<script>
+// ─── DRUM TYPES ───────────────────────────────────────────────
+const DRUM_TYPES = [
+  {
+    id: 'zuGu', name: '坐鼓', color: '#c0392b',
+    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="12" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+    </svg>`
+  },
+  {
+    id: 'ceGu', name: '侧鼓', color: '#27ae60',
+    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="12" fill="none" stroke="#27ae60" stroke-width="2.5"/>
+    </svg>`
+  },
+  {
+    id: 'zhanGu', name: '战鼓', color: '#2980b9',
+    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="12" fill="none" stroke="#2980b9" stroke-width="2.5"/>
+    </svg>`
+  },
+  {
+    id: 'pingGu', name: '平鼓', color: '#2c2c2c',
+    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="12" fill="none" stroke="#2c2c2c" stroke-width="2.5"/>
+    </svg>`
+  },
+  {
+    id: 'guShou', name: '鼓手', color: '#2c2c2c',
+    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 4 L28 26 L4 26 Z" fill="none" stroke="#2c2c2c" stroke-width="2.5" stroke-linejoin="round"/>
+    </svg>`
+  },
+  {
+    id: 'guanZhong', name: '观众', color: '#1a1208',
+    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 30 L4 16 L10 16 L10 2 L22 2 L22 16 L28 16 Z" fill="none" stroke="#1a1208" stroke-width="2.5" stroke-linejoin="round"/>
+    </svg>`
+  },
+];
+
+const TYPE_MAP = {};
+DRUM_TYPES.forEach(t => TYPE_MAP[t.id] = t);
+
+// ─── STATE ───────────────────────────────────────────────────
+let mode = 'place';
+let selectedType = 'zuGu';
+let tokens = [];      // {id, typeId, x, y}
+let history = [];
+let selectedIds = new Set();
+let gridEnabled = false;
+let gridSize = 40;
+let nextId = 1;
+let dragging = null;  // {id, ox, oy}
+let selBox = null;    // {sx,sy,ex,ey}
+let saves = JSON.parse(localStorage.getItem('drumSaves') || '[]');
+
+const stage = document.getElementById('stage');
+const selRect = document.getElementById('sel-rect');
+
+// ─── INIT ─────────────────────────────────────────────────────
+function init() {
+  buildPalette();
+  buildLegend();
+  resizeStage();
+  renderSaved();
+  updateStats();
+  bindStageEvents();
+}
+
+function buildPalette() {
+  const pal = document.getElementById('drum-palette');
+  pal.innerHTML = '';
+  DRUM_TYPES.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'drum-item' + (t.id === selectedType ? ' active' : '');
+    div.dataset.id = t.id;
+    div.innerHTML = `<div class="icon">${t.svg(26)}</div><div class="name">${t.name}</div>`;
+    div.addEventListener('click', () => selectType(t.id));
+    pal.appendChild(div);
+  });
+}
+
+function buildLegend() {
+  const el = document.getElementById('legend-items');
+  el.innerHTML = DRUM_TYPES.map(t => `
+    <div class="legend-item">
+      <div class="icon">${t.svg(24)}</div>
+      <span>${t.name}</span>
+    </div>`).join('');
+}
+
+function selectType(id) {
+  selectedType = id;
+  document.querySelectorAll('.drum-item').forEach(d => {
+    d.classList.toggle('active', d.dataset.id === id);
+  });
+  if (mode !== 'erase') setMode('place');
+}
+
+function setMode(m) {
+  mode = m;
+  stage.className = 'mode-' + m;
+  ['place','select','erase'].forEach(x => {
+    const b = document.getElementById('btn-' + x);
+    if (b) b.classList.toggle('active', x === m);
+  });
+  selectedIds.clear();
+  renderTokens();
+}
+
+// ─── STAGE RESIZE ─────────────────────────────────────────────
+function resizeStage() {
+  const w = parseInt(document.getElementById('stage-w').value);
+  const h = parseInt(document.getElementById('stage-h').value);
+  stage.style.width = w + 'px';
+  stage.style.height = h + 'px';
+  const go = document.getElementById('grid-overlay');
+  go.width = w; go.height = h;
+  drawGrid();
+}
+
+function toggleGrid(v) {
+  gridEnabled = v;
+  const go = document.getElementById('grid-overlay');
+  go.classList.toggle('visible', v);
+  drawGrid();
+}
+
+function drawGrid() {
+  const go = document.getElementById('grid-overlay');
+  const ctx = go.getContext('2d');
+  ctx.clearRect(0, 0, go.width, go.height);
+  if (!gridEnabled) return;
+  ctx.strokeStyle = 'rgba(184,134,11,.18)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= go.width; x += gridSize) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, go.height); ctx.stroke();
+  }
+  for (let y = 0; y <= go.height; y += gridSize) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(go.width, y); ctx.stroke();
+  }
+}
+
+// ─── STAGE EVENTS ─────────────────────────────────────────────
+function bindStageEvents() {
+  stage.addEventListener('mousedown', onStageDown);
+  stage.addEventListener('mousemove', onStageMove);
+  stage.addEventListener('mouseup', onStageUp);
+  stage.addEventListener('contextmenu', e => e.preventDefault());
+}
+
+function snapXY(x, y) {
+  if (!gridEnabled) return {x, y};
+  return {x: Math.round(x/gridSize)*gridSize, y: Math.round(y/gridSize)*gridSize};
+}
+
+function stagePos(e) {
+  const r = stage.getBoundingClientRect();
+  return {x: e.clientX - r.left, y: e.clientY - r.top};
+}
+
+function onStageDown(e) {
+  if (e.button !== 0) return;
+  const {x, y} = stagePos(e);
+  if (mode === 'place') {
+    const snapped = snapXY(x, y);
+    pushHistory();
+    addToken(selectedType, snapped.x, snapped.y);
+  } else if (mode === 'select') {
+    // start selection box
+    selBox = {sx: x, sy: y, ex: x, ey: y};
+    selRect.style.display = 'block';
+    updateSelRect();
+  } else if (mode === 'erase') {
+    // handled by token click
+  }
+}
+
+function onStageMove(e) {
+  if (mode === 'select' && selBox) {
+    const {x, y} = stagePos(e);
+    selBox.ex = x; selBox.ey = y;
+    updateSelRect();
+  }
+  if (dragging) {
+    const {x, y} = stagePos(e);
+    const snapped = snapXY(x + dragging.ox, y + dragging.oy);
+    const sw = parseInt(stage.style.width);
+    const sh = parseInt(stage.style.height);
+    const tok = tokens.find(t => t.id === dragging.id);
+    if (tok) {
+      tok.x = Math.max(5, Math.min(sw-5, snapped.x));
+      tok.y = Math.max(5, Math.min(sh-5, snapped.y));
+      const el = document.getElementById('tok-' + tok.id);
+      if (el) { el.style.left = tok.x + 'px'; el.style.top = tok.y + 'px'; }
+    }
+  }
+}
+
+function onStageUp(e) {
+  if (mode === 'select' && selBox) {
+    const minX = Math.min(selBox.sx, selBox.ex);
+    const maxX = Math.max(selBox.sx, selBox.ex);
+    const minY = Math.min(selBox.sy, selBox.ey);
+    const maxY = Math.max(selBox.sy, selBox.ey);
+    if (maxX - minX < 5 && maxY - minY < 5) {
+      selectedIds.clear();
+    } else {
+      selectedIds.clear();
+      tokens.forEach(t => {
+        if (t.x >= minX && t.x <= maxX && t.y >= minY && t.y <= maxY) selectedIds.add(t.id);
+      });
+    }
+    selBox = null;
+    selRect.style.display = 'none';
+    renderTokens();
+  }
+  dragging = null;
+}
+
+function updateSelRect() {
+  if (!selBox) return;
+  const l = Math.min(selBox.sx, selBox.ex);
+  const t = Math.min(selBox.sy, selBox.ey);
+  const w = Math.abs(selBox.ex - selBox.sx);
+  const h = Math.abs(selBox.ey - selBox.sy);
+  selRect.style.left = l+'px'; selRect.style.top = t+'px';
+  selRect.style.width = w+'px'; selRect.style.height = h+'px';
+}
+
+// ─── TOKEN MANAGEMENT ─────────────────────────────────────────
+function addToken(typeId, x, y) {
+  const tok = {id: nextId++, typeId, x, y};
+  tokens.push(tok);
+  renderToken(tok);
+  updateStats();
+}
+
+function renderToken(tok) {
+  const el = document.createElement('div');
+  el.className = 'drum-token';
+  el.id = 'tok-' + tok.id;
+  el.style.left = tok.x + 'px';
+  el.style.top = tok.y + 'px';
+  el.innerHTML = TYPE_MAP[tok.typeId].svg(30);
+  el.classList.toggle('selected', selectedIds.has(tok.id));
+
+  el.addEventListener('mousedown', ev => {
+    ev.stopPropagation();
+    if (mode === 'erase') {
+      pushHistory();
+      removeToken(tok.id);
+      return;
+    }
+    if (mode === 'select') {
+      selectedIds.clear();
+      selectedIds.add(tok.id);
+      renderTokens();
+      return;
+    }
+    if (mode === 'place') {
+      // drag
+      const {x, y} = stagePos(ev);
+      dragging = {id: tok.id, ox: tok.x - x, oy: tok.y - y};
+      pushHistory();
+    }
+  });
+
+  // keyboard delete
+  el.addEventListener('keydown', ev => {
+    if (ev.key === 'Delete' || ev.key === 'Backspace') {
+      pushHistory();
+      removeToken(tok.id);
+    }
+  });
+
+  stage.appendChild(el);
+}
+
+function removeToken(id) {
+  tokens = tokens.filter(t => t.id !== id);
+  const el = document.getElementById('tok-' + id);
+  if (el) el.remove();
+  selectedIds.delete(id);
+  updateStats();
+}
+
+function renderTokens() {
+  // clear all token elements
+  stage.querySelectorAll('.drum-token').forEach(e => e.remove());
+  tokens.forEach(tok => renderToken(tok));
+}
+
+function clearStage() {
+  if (!confirm('确定清空当前阵型？')) return;
+  pushHistory();
+  tokens = [];
+  stage.querySelectorAll('.drum-token').forEach(e => e.remove());
+  updateStats();
+}
+
+// ─── STATS ────────────────────────────────────────────────────
+function updateStats() {
+  const counts = {};
+  DRUM_TYPES.forEach(t => counts[t.id] = 0);
+  tokens.forEach(t => counts[t.typeId]++);
+  const el = document.getElementById('stats');
+  el.innerHTML = DRUM_TYPES.map(t => `
+    <div class="stat-row">
+      <span class="stat-label">
+        <span class="dot" style="color:${t.color};border-color:${t.color}"></span>
+        ${t.name}
+      </span>
+      <span class="stat-count" style="color:${t.color}">${counts[t.id]}</span>
+    </div>`).join('');
+  document.getElementById('total-count').textContent = tokens.length;
+
+  // sync title
+  const nm = document.getElementById('formation-name').value;
+  document.getElementById('stage-title').textContent = nm;
+}
+
+document.getElementById('formation-name').addEventListener('input', updateStats);
+
+// ─── HISTORY / UNDO ───────────────────────────────────────────
+function pushHistory() {
+  history.push(JSON.stringify(tokens.map(t => ({...t}))));
+  if (history.length > 60) history.shift();
+}
+
+function undo() {
+  if (!history.length) return;
+  const prev = JSON.parse(history.pop());
+  tokens = prev;
+  // restore nextId
+  if (tokens.length) nextId = Math.max(...tokens.map(t => t.id)) + 1;
+  renderTokens();
+  updateStats();
+  toast('已撤销');
+}
+
+// keyboard undo
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    if (selectedIds.size) {
+      pushHistory();
+      selectedIds.forEach(id => {
+        tokens = tokens.filter(t => t.id !== id);
+        const el = document.getElementById('tok-' + id);
+        if (el) el.remove();
+      });
+      selectedIds.clear();
+      updateStats();
+    }
+  }
+});
+
+// ─── SAVE / LOAD ──────────────────────────────────────────────
+function openSaveModal() {
+  document.getElementById('save-name-input').value = document.getElementById('formation-name').value;
+  document.getElementById('save-modal').classList.add('open');
+}
+function closeSaveModal() {
+  document.getElementById('save-modal').classList.remove('open');
+}
+function saveFormation() {
+  const name = document.getElementById('save-name-input').value.trim() || '未命名';
+  const entry = {
+    name,
+    tokens: tokens.map(t => ({...t})),
+    stageW: document.getElementById('stage-w').value,
+    stageH: document.getElementById('stage-h').value,
+    notes: document.querySelector('.notes-panel textarea').value,
+    date: new Date().toLocaleDateString('zh-CN')
+  };
+  saves = saves.filter(s => s.name !== name);
+  saves.unshift(entry);
+  if (saves.length > 20) saves.pop();
+  localStorage.setItem('drumSaves', JSON.stringify(saves));
+  closeSaveModal();
+  renderSaved();
+  toast('「' + name + '」已保存');
+}
+
+function loadSaved(name) {
+  const entry = saves.find(s => s.name === name);
+  if (!entry) return;
+  pushHistory();
+  tokens = entry.tokens.map(t => ({...t}));
+  if (entry.stageW) document.getElementById('stage-w').value = entry.stageW;
+  if (entry.stageH) document.getElementById('stage-h').value = entry.stageH;
+  if (entry.notes) document.querySelector('.notes-panel textarea').value = entry.notes;
+  document.getElementById('formation-name').value = entry.name;
+  if (tokens.length) nextId = Math.max(...tokens.map(t => t.id)) + 1;
+  resizeStage();
+  renderTokens();
+  updateStats();
+  toast('已加载「' + name + '」');
+}
+
+function deleteSaved(name) {
+  saves = saves.filter(s => s.name !== name);
+  localStorage.setItem('drumSaves', JSON.stringify(saves));
+  renderSaved();
+}
+
+function renderSaved() {
+  const el = document.getElementById('saved-list');
+  if (!saves.length) { el.innerHTML = '<div style="font-size:.78rem;color:#a09070;padding:4px 2px">暂无保存记录</div>'; return; }
+  el.innerHTML = saves.map(s => `
+    <div class="saved-item">
+      <button class="load" onclick="loadSaved('${s.name.replace(/'/g,"\\'")}')">📋 ${s.name}</button>
+      <button class="del" onclick="deleteSaved('${s.name.replace(/'/g,"\\'")}')">×</button>
+    </div>`).join('');
+}
+
+// ─── PRESETS ──────────────────────────────────────────────────
+function loadPreset(name) {
+  pushHistory();
+  const W = parseInt(stage.style.width) || 800;
+  const H = parseInt(stage.style.height) || 500;
+  const cx = W / 2;
+  tokens = [];
+  stage.querySelectorAll('.drum-token').forEach(e => e.remove());
+  nextId = 1;
+
+  if (name === 'liChao') {
+    // 离巢 — from the image (top diagram, no drummers)
+    const layout = [
+      // 坐鼓 red row near top
+      ...[-120,-60,0,60].map(dx => ({typeId:'zuGu', x:cx+dx, y:80})),
+      // 侧鼓 green middle sides
+      ...[-160,-120,-80].map(dx => ({typeId:'ceGu', x:cx+dx, y:150})),
+      ...[80,120,160].map(dx => ({typeId:'ceGu', x:cx+dx, y:150})),
+      ...[-140,-100].map(dx => ({typeId:'ceGu', x:cx+dx, y:200})),
+      ...[100,140].map(dx => ({typeId:'ceGu', x:cx+dx, y:200})),
+      // 平鼓 black center & bottom
+      [{typeId:'pingGu', x:cx, y:160}],
+      [{typeId:'pingGu', x:cx-20, y:210},{typeId:'pingGu', x:cx+20, y:210}],
+      ...[-120,-80,-40,0,40,80,120].map(dx => ({typeId:'pingGu', x:cx+dx, y:270})),
+      // 战鼓 blue bottom row
+      ...[-60,-20,20,60].map(dx => ({typeId:'zhanGu', x:cx+dx, y:330})),
+    ].flat();
+    layout.forEach(t => { tokens.push({id:nextId++, ...t}); });
+  } else if (name === 'basic') {
+    // 基础站位 — circles + triangles
+    const layout = [
+      ...[-120,-60,0,60].map(dx => ({typeId:'zuGu', x:cx+dx, y:70})),
+      ...[-60,-20,20,60].map(dx => ({typeId:'guShou', x:cx+dx, y:110})),
+      ...[-160,-120,-80].map(dx => ({typeId:'ceGu', x:cx+dx, y:160})),
+      ...[-160,-120,-80].map(dx => ({typeId:'guShou', x:cx+dx-20, y:160})),
+      ...[80,120,160].map(dx => ({typeId:'ceGu', x:cx+dx, y:160})),
+      ...[80,120,160].map(dx => ({typeId:'guShou', x:cx+dx+20, y:160})),
+      [{typeId:'pingGu', x:cx, y:175}],
+      [{typeId:'guShou', x:cx, y:215}],
+      ...[-80,-40,0,40,80,120].map(dx => ({typeId:'pingGu', x:cx+dx-20, y:250})),
+      ...[-80,-40,0,40,80,120].map(dx => ({typeId:'guShou', x:cx+dx-20, y:290})),
+      ...[-60,-20,20,60].map(dx => ({typeId:'zhanGu', x:cx+dx, y:340})),
+      ...[-40,0,40].map(dx => ({typeId:'guShou', x:cx+dx, y:380})),
+    ].flat();
+    layout.forEach(t => { tokens.push({id:nextId++, ...t}); });
+  } else if (name === 'double') {
+    // 双鼓站位
+    const layout = [
+      ...[cx-120, cx-60, cx, cx+60, cx+120].map(x => ({typeId:'zuGu', x, y:70})),
+      // side drums with extra markers
+      ...[-160,-120,-80].map(dx => ({typeId:'ceGu', x:cx+dx, y:155})),
+      ...[80,120,160].map(dx => ({typeId:'ceGu', x:cx+dx, y:155})),
+      [{typeId:'pingGu', x:cx, y:170}],
+      [{typeId:'pingGu', x:cx-30, y:220},{typeId:'pingGu', x:cx+30, y:220}],
+      [{typeId:'guShou', x:cx, y:225}],
+      ...[-100,-60,-20,20,60,100].map(dx => ({typeId:'pingGu', x:cx+dx, y:280})),
+      ...[-80,-40,0,40,80].map(dx => ({typeId:'guShou', x:cx+dx, y:320})),
+      ...[-60,-20,20,60].map(dx => ({typeId:'zhanGu', x:cx+dx, y:365})),
+      ...[-40,0,40].map(dx => ({typeId:'guShou', x:cx+dx, y:405})),
+    ].flat();
+    layout.forEach(t => { tokens.push({id:nextId++, ...t}); });
+  } else if (name === 'expand') {
+    // 展翼阵型
+    for (let i = -3; i <= 3; i++) tokens.push({id:nextId++, typeId:'zuGu', x:cx+i*55, y:70});
+    for (let i = -4; i <= 4; i++) tokens.push({id:nextId++, typeId:'pingGu', x:cx+i*50, y:145});
+    for (let i = -3; i <= 3; i++) tokens.push({id:nextId++, typeId:'ceGu', x:cx+i*55, y:220});
+    for (let i = -2; i <= 2; i++) tokens.push({id:nextId++, typeId:'zhanGu', x:cx+i*60, y:295});
+    for (let i = -3; i <= 3; i++) tokens.push({id:nextId++, typeId:'guShou', x:cx+i*55, y:370});
+  }
+
+  renderTokens();
+  updateStats();
+  toast('已加载预设：' + {liChao:'离巢',basic:'基础站位',double:'双鼓站位',expand:'展翼'}[name]);
+}
+
+// ─── EXPORT ───────────────────────────────────────────────────
+function exportPNG() {
+  // Use html2canvas-style approach with SVG snapshot
+  const stageEl = document.getElementById('stage');
+  const W = parseInt(stageEl.style.width);
+  const H = parseInt(stageEl.style.height);
+  const title = document.getElementById('formation-name').value;
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  svg.setAttribute('width', W + 100);
+  svg.setAttribute('height', H + 100);
+  svg.setAttribute('viewBox', `0 0 ${W+100} ${H+100}`);
+
+  // background
+  const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  bg.setAttribute('width', W+100); bg.setAttribute('height', H+100);
+  bg.setAttribute('fill','#f7f3ec'); svg.appendChild(bg);
+
+  // title
+  const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+  t.setAttribute('x', (W+100)/2); t.setAttribute('y', 38);
+  t.setAttribute('text-anchor','middle');
+  t.setAttribute('font-size','22'); t.setAttribute('font-weight','bold');
+  t.setAttribute('fill','#1a1208'); t.textContent = title; svg.appendChild(t);
+
+  // stage border
+  const border = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  border.setAttribute('x',50); border.setAttribute('y',50);
+  border.setAttribute('width',W); border.setAttribute('height',H);
+  border.setAttribute('fill','white'); border.setAttribute('stroke','#1a1208'); border.setAttribute('stroke-width','2.5');
+  svg.appendChild(border);
+
+  // center line
+  const cl = document.createElementNS('http://www.w3.org/2000/svg','line');
+  cl.setAttribute('x1',(W+100)/2); cl.setAttribute('y1',50);
+  cl.setAttribute('x2',(W+100)/2); cl.setAttribute('y2',H+50);
+  cl.setAttribute('stroke','rgba(44,44,44,.15)'); cl.setAttribute('stroke-width','1');
+  svg.appendChild(cl);
+
+  // tokens
+  const COLORS = {zuGu:'#c0392b',ceGu:'#27ae60',zhanGu:'#2980b9',pingGu:'#2c2c2c',guShou:'#2c2c2c',guanZhong:'#1a1208'};
+  tokens.forEach(tok => {
+    const px = tok.x + 50;
+    const py = tok.y + 50;
+    if (tok.typeId === 'guShou') {
+      const tri = document.createElementNS('http://www.w3.org/2000/svg','path');
+      tri.setAttribute('d', `M${px} ${py-13} L${px+12} ${py+10} L${px-12} ${py+10} Z`);
+      tri.setAttribute('fill','none'); tri.setAttribute('stroke', COLORS[tok.typeId]); tri.setAttribute('stroke-width','2.2');
+      svg.appendChild(tri);
+    } else if (tok.typeId === 'guanZhong') {
+      const arr = document.createElementNS('http://www.w3.org/2000/svg','path');
+      arr.setAttribute('d', `M${px} ${py+14} L${px-10} ${py+2} L${px-4} ${py+2} L${px-4} ${py-14} L${px+4} ${py-14} L${px+4} ${py+2} L${px+10} ${py+2} Z`);
+      arr.setAttribute('fill','none'); arr.setAttribute('stroke', COLORS[tok.typeId]); arr.setAttribute('stroke-width','2.2');
+      svg.appendChild(arr);
+    } else {
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx', px); c.setAttribute('cy', py); c.setAttribute('r', 13);
+      c.setAttribute('fill','none'); c.setAttribute('stroke', COLORS[tok.typeId]); c.setAttribute('stroke-width','2.2');
+      svg.appendChild(c);
+    }
+  });
+
+  // legend
+  const legendY = H + 62;
+  const types = Object.entries(COLORS);
+  types.forEach(([id, color], i) => {
+    const lx = 55 + i * 110;
+    if (id === 'guShou') {
+      const tri = document.createElementNS('http://www.w3.org/2000/svg','path');
+      tri.setAttribute('d',`M${lx+8} ${legendY-8} L${lx+16} ${legendY+6} L${lx} ${legendY+6} Z`);
+      tri.setAttribute('fill','none');tri.setAttribute('stroke',color);tri.setAttribute('stroke-width','1.8');
+      svg.appendChild(tri);
+    } else {
+      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('cx',lx+8);c.setAttribute('cy',legendY);c.setAttribute('r',7);
+      c.setAttribute('fill','none');c.setAttribute('stroke',color);c.setAttribute('stroke-width','1.8');
+      svg.appendChild(c);
+    }
+    const lt = document.createElementNS('http://www.w3.org/2000/svg','text');
+    lt.setAttribute('x',lx+20);lt.setAttribute('y',legendY+5);
+    lt.setAttribute('font-size','12');lt.setAttribute('fill','#1a1208');
+    lt.textContent = TYPE_MAP[id].name; svg.appendChild(lt);
+  });
+
+  const blob = new Blob([svg.outerHTML], {type:'image/svg+xml'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = title + '.svg'; a.click();
+  URL.revokeObjectURL(url);
+  toast('已导出为 SVG');
+}
+
+// ─── TOAST ────────────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────
+init();
+loadPreset('liChao');
+</script>
+</body>
+</html>
