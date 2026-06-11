@@ -19,7 +19,6 @@
     --gold-light: #d4a017;
     --panel-bg: #faf7f0;
     --border: #c8b89a;
-    --shadow: rgba(26,18,8,0.12);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,7 +32,6 @@
     flex-direction: column;
   }
 
-  /* ── HEADER ── */
   header {
     background: var(--ink);
     color: var(--paper);
@@ -51,12 +49,9 @@
     letter-spacing: .12em;
     color: var(--gold-light);
   }
-  header .sub {
-    font-size: .78rem;
-    color: #a09070;
-    letter-spacing: .06em;
-  }
+  header .sub { font-size: .78rem; color: #a09070; letter-spacing: .06em; }
   header .actions { display:flex; gap:10px; }
+
   .btn {
     padding: 7px 18px;
     border: none;
@@ -67,10 +62,7 @@
     font-weight: 500;
     transition: all .15s;
   }
-  .btn-gold {
-    background: var(--gold);
-    color: #fff;
-  }
+  .btn-gold { background: var(--gold); color: #fff; }
   .btn-gold:hover { background: var(--gold-light); }
   .btn-outline {
     background: transparent;
@@ -85,14 +77,9 @@
   }
   .btn-danger:hover { background: #3a1a1a; color: #e09090; }
 
-  /* ── LAYOUT ── */
-  .workspace {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
+  .workspace { display: flex; flex: 1; overflow: hidden; }
 
-  /* ── LEFT PANEL ── */
+  /* LEFT PANEL */
   .left-panel {
     width: 220px;
     min-width: 220px;
@@ -100,10 +87,8 @@
     border-right: 1.5px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 0;
     overflow-y: auto;
   }
-
   .panel-section {
     padding: 16px 14px 12px;
     border-bottom: 1px solid var(--warm-mid);
@@ -114,69 +99,58 @@
     font-weight: 700;
     letter-spacing: .14em;
     color: var(--gold);
-    text-transform: uppercase;
     margin-bottom: 12px;
   }
-
-  /* Drum type buttons */
-  .drum-palette {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+  .drum-palette { display: flex; flex-direction: column; gap: 6px; }
   .drum-item {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 8px 10px;
     border-radius: 6px;
-    cursor: grab;
+    cursor: pointer;
     border: 1.5px solid transparent;
     transition: all .15s;
     user-select: none;
   }
   .drum-item:hover { background: var(--warm-mid); border-color: var(--border); }
   .drum-item.active { border-color: var(--gold); background: #f0e8d0; }
-  .drum-item .icon {
-    width: 28px; height: 28px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .drum-item .icon svg { width: 100%; height: 100%; }
+  .drum-item .icon { width: 28px; height: 28px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .drum-item .icon svg { width:100%; height:100%; }
+  .drum-item .label-row { display:flex; flex-direction:column; gap:2px; }
   .drum-item .name { font-size: .85rem; font-weight: 500; }
+  .drum-item .rot-hint { font-size: .68rem; color: #9a8060; }
 
-  /* Formation presets */
-  .preset-list {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .preset-btn {
-    width: 100%;
-    padding: 7px 10px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: left;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: .82rem;
-    color: var(--ink);
-    transition: all .15s;
-  }
-  .preset-btn:hover { background: var(--warm-mid); border-color: var(--gold); }
-
-  /* Saved formations */
-  .saved-list {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  .saved-item {
+  /* rotation controls inside drum item */
+  .drum-rot-controls {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
+    margin-top: 4px;
   }
+  .rot-btn {
+    width: 22px; height: 22px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    background: transparent;
+    cursor: pointer;
+    font-size: .75rem;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink);
+    transition: all .12s;
+    padding: 0;
+  }
+  .rot-btn:hover { background: var(--warm-mid); border-color: var(--gold); }
+  .rot-display {
+    font-size: .7rem;
+    color: #7a6a4a;
+    min-width: 32px;
+    text-align: center;
+  }
+
+  /* saved list */
+  .saved-list { display: flex; flex-direction: column; gap: 5px; }
+  .saved-item { display: flex; align-items: center; gap: 6px; }
   .saved-item button.load {
     flex: 1;
     padding: 5px 8px;
@@ -202,17 +176,12 @@
     font-size: .75rem;
     color: #b06060;
     transition: all .15s;
+    flex-shrink: 0;
   }
   .saved-item button.del:hover { background: #f0d8d8; }
 
-  /* ── MAIN CANVAS AREA ── */
-  .canvas-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
+  /* CANVAS AREA */
+  .canvas-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
   .canvas-toolbar {
     background: var(--panel-bg);
     border-bottom: 1px solid var(--border);
@@ -222,11 +191,7 @@
     gap: 14px;
     flex-wrap: wrap;
   }
-  .canvas-toolbar label {
-    font-size: .8rem;
-    color: #7a6a4a;
-    margin-right: 4px;
-  }
+  .canvas-toolbar label { font-size: .8rem; color: #7a6a4a; margin-right: 2px; }
   .canvas-toolbar input[type=text] {
     border: 1px solid var(--border);
     background: #fff;
@@ -234,13 +199,10 @@
     border-radius: 4px;
     font-size: .85rem;
     font-family: 'Noto Sans SC', sans-serif;
-    width: 160px;
+    width: 140px;
     color: var(--ink);
   }
-  .canvas-toolbar .sep {
-    width: 1px; height: 22px;
-    background: var(--border);
-  }
+  .sep { width: 1px; height: 22px; background: var(--border); }
   .mode-btn {
     padding: 5px 14px;
     border: 1.5px solid var(--border);
@@ -255,6 +217,39 @@
   .mode-btn.active { background: var(--gold); border-color: var(--gold); color: #fff; }
   .mode-btn:hover:not(.active) { background: var(--warm-mid); }
 
+  /* rotate-selected button */
+  .rot-sel-btn {
+    padding: 5px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    font-size: .8rem;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink);
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .rot-sel-btn:hover { background: var(--warm-mid); border-color: var(--gold); }
+
+  .size-controls { display:flex; align-items:center; gap:8px; }
+  .size-controls input[type=number] {
+    width: 62px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: .82rem;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--ink);
+    background: #fff;
+  }
+  .size-controls span { font-size: .78rem; color: #7a6a4a; }
+  .grid-toggle { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:.82rem; }
+  .grid-toggle input { cursor:pointer; accent-color: var(--gold); }
+
+  /* CANVAS SCROLL */
   .canvas-scroll {
     flex: 1;
     overflow: auto;
@@ -265,24 +260,10 @@
     background: #ede8dc url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='.8' fill='%23c8b89a55'/%3E%3C/svg%3E");
   }
 
-  /* ── STAGE ── */
-  #stage-wrapper {
-    position: relative;
-    display: inline-block;
-  }
-  #stage {
-    position: relative;
-    background: #fff;
-    border: 3px solid var(--ink);
-    cursor: crosshair;
-    overflow: hidden;
-  }
-  #stage.mode-select { cursor: default; }
-  #stage.mode-erase  { cursor: cell; }
-
+  #stage-wrapper { position: relative; display: inline-block; }
   .stage-label {
     position: absolute;
-    top: -28px;
+    top: -30px;
     left: 50%;
     transform: translateX(-50%);
     font-family: 'Noto Serif SC', serif;
@@ -293,43 +274,33 @@
     pointer-events: none;
     white-space: nowrap;
   }
+  .audience-arrow { position: absolute; pointer-events: none; }
 
-  .audience-arrow {
-    position: absolute;
-    pointer-events: none;
+  #stage {
+    position: relative;
+    background: #fff;
+    border: 3px solid var(--ink);
+    cursor: crosshair;
+    overflow: hidden;
   }
+  #stage.mode-select { cursor: default; }
+  #stage.mode-erase  { cursor: cell; }
 
-  /* center line */
   #center-line {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 50%;
-    width: 1px;
-    background: rgba(44,44,44,.15);
-    pointer-events: none;
+    position: absolute; top: 0; bottom: 0; left: 50%;
+    width: 1px; background: rgba(44,44,44,.15); pointer-events: none;
   }
   #center-label {
-    position: absolute;
-    top: 6px;
-    left: 50%;
+    position: absolute; top: 6px; left: 50%;
     transform: translateX(-50%);
-    font-size: .7rem;
-    color: #4a90d9;
-    pointer-events: none;
-    letter-spacing: .06em;
+    font-size: .7rem; color: #4a90d9; pointer-events: none; letter-spacing: .06em;
   }
-
-  /* grid overlay */
   #grid-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity .2s;
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none; opacity: 0; transition: opacity .2s;
   }
   #grid-overlay.visible { opacity: 1; }
 
-  /* drum tokens on stage */
   .drum-token {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -338,10 +309,9 @@
     user-select: none;
   }
   .drum-token:hover { filter: drop-shadow(0 0 5px rgba(184,134,11,.8)); }
-  .drum-token.selected { filter: drop-shadow(0 0 6px rgba(184,134,11,1)); }
+  .drum-token.selected { filter: drop-shadow(0 0 7px rgba(184,134,11,1)); }
   .drum-token svg { display: block; }
 
-  /* selection rect */
   #sel-rect {
     position: absolute;
     border: 1.5px dashed var(--gold);
@@ -350,171 +320,68 @@
     display: none;
   }
 
-  /* ── RIGHT PANEL ── */
+  /* RIGHT PANEL */
   .right-panel {
-    width: 200px;
-    min-width: 200px;
+    width: 200px; min-width: 200px;
     background: var(--panel-bg);
     border-left: 1.5px solid var(--border);
-    padding: 0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
   }
-  .legend {
-    padding: 16px 14px;
-    border-bottom: 1px solid var(--warm-mid);
-  }
-  .legend h3 {
-    font-family: 'Noto Serif SC', serif;
-    font-size: .78rem;
-    letter-spacing: .14em;
-    color: var(--gold);
-    margin-bottom: 12px;
-  }
-  .legend-item {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 8px;
-    font-size: .83rem;
-  }
-  .legend-item .icon { width: 26px; height: 26px; display:flex; align-items:center; justify-content:center; }
-  .legend-item .icon svg { width:100%; height:100%; }
+  .legend { padding: 16px 14px; border-bottom: 1px solid var(--warm-mid); }
+  .legend h3 { font-family:'Noto Serif SC',serif; font-size:.78rem; letter-spacing:.14em; color:var(--gold); margin-bottom:12px; }
+  .legend-item { display:flex; align-items:center; gap:10px; margin-bottom:8px; font-size:.83rem; }
+  .legend-item .icon { width:26px; height:26px; display:flex; align-items:center; justify-content:center; }
 
-  .stats-panel {
-    padding: 16px 14px;
-    border-bottom: 1px solid var(--warm-mid);
-  }
-  .stats-panel h3 {
-    font-family: 'Noto Serif SC', serif;
-    font-size: .78rem;
-    letter-spacing: .14em;
-    color: var(--gold);
-    margin-bottom: 10px;
-  }
-  .stat-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-    font-size: .82rem;
-  }
-  .stat-row .dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    border: 2px solid currentColor;
-    margin-right: 4px;
-    display: inline-block;
-  }
+  .stats-panel { padding: 16px 14px; border-bottom: 1px solid var(--warm-mid); }
+  .stats-panel h3 { font-family:'Noto Serif SC',serif; font-size:.78rem; letter-spacing:.14em; color:var(--gold); margin-bottom:10px; }
+  .stat-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:.82rem; }
+  .stat-row .dot { width:10px; height:10px; border-radius:50%; border:2px solid currentColor; margin-right:4px; display:inline-block; }
   .stat-label { display:flex; align-items:center; }
-  .stat-count {
-    font-weight: 700;
-    font-family: 'Noto Serif SC', serif;
-    font-size: .95rem;
-  }
+  .stat-count { font-weight:700; font-family:'Noto Serif SC',serif; font-size:.95rem; }
 
-  .notes-panel {
-    padding: 16px 14px;
-  }
-  .notes-panel h3 {
-    font-family: 'Noto Serif SC', serif;
-    font-size: .78rem;
-    letter-spacing: .14em;
-    color: var(--gold);
-    margin-bottom: 8px;
-  }
+  .notes-panel { padding: 16px 14px; }
+  .notes-panel h3 { font-family:'Noto Serif SC',serif; font-size:.78rem; letter-spacing:.14em; color:var(--gold); margin-bottom:8px; }
   .notes-panel textarea {
-    width: 100%;
-    height: 100px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 8px;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: .8rem;
-    resize: vertical;
-    color: var(--ink);
-    background: #fff;
+    width:100%; height:100px; border:1px solid var(--border); border-radius:4px;
+    padding:8px; font-family:'Noto Sans SC',sans-serif; font-size:.8rem;
+    resize:vertical; color:var(--ink); background:#fff;
   }
 
-  /* ── TOAST ── */
   #toast {
-    position: fixed;
-    bottom: 28px;
-    left: 50%;
+    position: fixed; bottom: 28px; left: 50%;
     transform: translateX(-50%) translateY(80px);
-    background: var(--ink);
-    color: var(--gold-light);
-    padding: 10px 22px;
-    border-radius: 6px;
-    font-size: .85rem;
-    border: 1px solid var(--gold);
-    transition: transform .3s;
-    pointer-events: none;
-    z-index: 999;
-    font-family: 'Noto Serif SC', serif;
-    letter-spacing: .06em;
+    background: var(--ink); color: var(--gold-light);
+    padding: 10px 22px; border-radius: 6px; font-size: .85rem;
+    border: 1px solid var(--gold); transition: transform .3s;
+    pointer-events: none; z-index: 999;
+    font-family: 'Noto Serif SC', serif; letter-spacing: .06em;
   }
   #toast.show { transform: translateX(-50%) translateY(0); }
 
-  /* ── MODAL ── */
   .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(26,18,8,.55);
-    z-index: 500;
-    align-items: center;
-    justify-content: center;
+    display: none; position: fixed; inset: 0;
+    background: rgba(26,18,8,.55); z-index: 500;
+    align-items: center; justify-content: center;
   }
   .modal-overlay.open { display: flex; }
   .modal {
-    background: var(--panel-bg);
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    padding: 28px 32px;
-    min-width: 320px;
-    max-width: 90vw;
+    background: var(--panel-bg); border: 2px solid var(--border);
+    border-radius: 8px; padding: 28px 32px; min-width: 320px; max-width: 90vw;
   }
-  .modal h2 {
-    font-family: 'Noto Serif SC', serif;
-    font-size: 1.1rem;
-    color: var(--ink);
-    margin-bottom: 18px;
-  }
-  .modal label { font-size: .83rem; display:block; margin-bottom:5px; color:#5a4a2a; }
+  .modal h2 { font-family:'Noto Serif SC',serif; font-size:1.1rem; color:var(--ink); margin-bottom:18px; }
+  .modal label { font-size:.83rem; display:block; margin-bottom:5px; color:#5a4a2a; }
   .modal input {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 7px 10px;
-    font-size: .88rem;
-    font-family: 'Noto Sans SC', sans-serif;
-    color: var(--ink);
-    margin-bottom: 16px;
-    background: #fff;
+    width:100%; border:1px solid var(--border); border-radius:4px;
+    padding:7px 10px; font-size:.88rem; font-family:'Noto Sans SC',sans-serif;
+    color:var(--ink); margin-bottom:16px; background:#fff;
   }
   .modal-actions { display:flex; gap:10px; justify-content:flex-end; }
-
-  /* size controls */
-  .size-controls { display:flex; align-items:center; gap:8px; }
-  .size-controls input[type=number] {
-    width: 64px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 4px 6px;
-    font-size: .82rem;
-    font-family: 'Noto Sans SC', sans-serif;
-    color: var(--ink);
-    background: #fff;
-  }
-  .size-controls span { font-size: .78rem; color: #7a6a4a; }
-
-  .grid-toggle { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:.82rem; }
-  .grid-toggle input { cursor:pointer; accent-color: var(--gold); }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="title-block">
     <h1>二十四节令鼓</h1>
@@ -522,7 +389,7 @@
   </div>
   <div class="actions">
     <button class="btn btn-outline" onclick="openSaveModal()">💾 保存阵型</button>
-    <button class="btn btn-outline" onclick="exportPNG()">📷 导出图片</button>
+    <button class="btn btn-outline" onclick="exportSVG()">📷 导出图片</button>
     <button class="btn btn-danger" onclick="clearStage()">✕ 清空</button>
   </div>
 </header>
@@ -533,21 +400,10 @@
   <div class="left-panel">
     <div class="panel-section">
       <h3>鼓 种</h3>
-      <div class="drum-palette" id="drum-palette">
-        <!-- filled by JS -->
-      </div>
-    </div>
-    <div class="panel-section">
-      <h3>预设阵型</h3>
-      <div class="preset-list">
-        <button class="preset-btn" onclick="loadPreset('basic')">基础站位</button>
-        <button class="preset-btn" onclick="loadPreset('double')">双鼓站位</button>
-        <button class="preset-btn" onclick="loadPreset('liChao')">离巢阵型</button>
-        <button class="preset-btn" onclick="loadPreset('expand')">展翼阵型</button>
-      </div>
+      <div class="drum-palette" id="drum-palette"></div>
     </div>
     <div class="panel-section" style="flex:1">
-      <h3>已保存</h3>
+      <h3>已保存阵型</h3>
       <div class="saved-list" id="saved-list"></div>
     </div>
   </div>
@@ -556,9 +412,9 @@
   <div class="canvas-area">
     <div class="canvas-toolbar">
       <label>阵型名称：</label>
-      <input type="text" id="formation-name" value="离巢" />
+      <input type="text" id="formation-name" value="立春" />
       <div class="sep"></div>
-      <label>舞台尺寸：</label>
+      <label>舞台：</label>
       <div class="size-controls">
         <input type="number" id="stage-w" value="800" min="400" max="1400" step="50" onchange="resizeStage()"/>
         <span>×</span>
@@ -570,6 +426,10 @@
       <button class="mode-btn" id="btn-select" onclick="setMode('select')">选择</button>
       <button class="mode-btn" id="btn-erase" onclick="setMode('erase')">删除</button>
       <div class="sep"></div>
+      <button class="rot-sel-btn" onclick="rotateSelected()" title="将选中符号顺时针旋转45°">
+        ↻ 旋转选中 +45°
+      </button>
+      <div class="sep"></div>
       <label class="grid-toggle">
         <input type="checkbox" id="grid-check" onchange="toggleGrid(this.checked)"/>
         网格对齐
@@ -578,18 +438,15 @@
       <button class="btn btn-outline" style="padding:5px 12px;font-size:.78rem" onclick="undo()">↩ 撤销</button>
     </div>
 
-    <div class="canvas-scroll" id="canvas-scroll">
+    <div class="canvas-scroll">
       <div id="stage-wrapper">
-        <div class="stage-label" id="stage-title">离巢</div>
-
-        <!-- Audience arrows (decorative) -->
+        <div class="stage-label" id="stage-title">立春</div>
         <svg class="audience-arrow" style="top:-2px;left:-2px;width:38px;height:44px" viewBox="0 0 38 44">
           <path d="M19 42 L4 22 L12 22 L12 2 L26 2 L26 22 L34 22 Z" fill="none" stroke="#1a1208" stroke-width="2.5"/>
         </svg>
-        <svg class="audience-arrow" id="arrow-right" style="top:-2px;right:-2px;width:38px;height:44px" viewBox="0 0 38 44">
+        <svg class="audience-arrow" style="top:-2px;right:-2px;width:38px;height:44px" viewBox="0 0 38 44">
           <path d="M19 42 L4 22 L12 22 L12 2 L26 2 L26 22 L34 22 Z" fill="none" stroke="#1a1208" stroke-width="2.5"/>
         </svg>
-
         <div id="stage">
           <div id="center-line"></div>
           <div id="center-label">Center</div>
@@ -629,50 +486,50 @@
     <input type="text" id="save-name-input" />
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeSaveModal()">取消</button>
-      <button class="btn btn-gold" onclick="saveFormation()">保存</button>
+      <button class="btn btn-gold" onclick="confirmSave()">保存</button>
     </div>
   </div>
 </div>
 
-<div id="toast">已保存</div>
+<div id="toast"></div>
 
 <script>
 // ─── DRUM TYPES ───────────────────────────────────────────────
 const DRUM_TYPES = [
   {
     id: 'zuGu', name: '坐鼓', color: '#c0392b',
-    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="16" r="12" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+    svg: (s=32, rot=0) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="12" fill="none" stroke="#c0392b" stroke-width="2.5" transform="rotate(${rot},16,16)"/>
     </svg>`
   },
   {
     id: 'ceGu', name: '侧鼓', color: '#27ae60',
-    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="16" r="12" fill="none" stroke="#27ae60" stroke-width="2.5"/>
+    svg: (s=32, rot=0) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="12" fill="none" stroke="#27ae60" stroke-width="2.5" transform="rotate(${rot},16,16)"/>
     </svg>`
   },
   {
     id: 'zhanGu', name: '战鼓', color: '#2980b9',
-    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="16" r="12" fill="none" stroke="#2980b9" stroke-width="2.5"/>
+    svg: (s=32, rot=0) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="12" fill="none" stroke="#2980b9" stroke-width="2.5" transform="rotate(${rot},16,16)"/>
     </svg>`
   },
   {
     id: 'pingGu', name: '平鼓', color: '#2c2c2c',
-    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="16" r="12" fill="none" stroke="#2c2c2c" stroke-width="2.5"/>
+    svg: (s=32, rot=0) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="12" fill="none" stroke="#2c2c2c" stroke-width="2.5" transform="rotate(${rot},16,16)"/>
     </svg>`
   },
   {
     id: 'guShou', name: '鼓手', color: '#2c2c2c',
-    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 4 L28 26 L4 26 Z" fill="none" stroke="#2c2c2c" stroke-width="2.5" stroke-linejoin="round"/>
+    svg: (s=32, rot=0) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 4 L28 26 L4 26 Z" fill="none" stroke="#2c2c2c" stroke-width="2.5" stroke-linejoin="round" transform="rotate(${rot},16,16)"/>
     </svg>`
   },
   {
     id: 'guanZhong', name: '观众', color: '#1a1208',
-    svg: (s=32) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <path d="M16 30 L4 16 L10 16 L10 2 L22 2 L22 16 L28 16 Z" fill="none" stroke="#1a1208" stroke-width="2.5" stroke-linejoin="round"/>
+    svg: (s=32, rot=0) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 30 L4 16 L10 16 L10 2 L22 2 L22 16 L28 16 Z" fill="none" stroke="#1a1208" stroke-width="2.5" stroke-linejoin="round" transform="rotate(${rot},16,16)"/>
     </svg>`
   },
 ];
@@ -680,18 +537,23 @@ const DRUM_TYPES = [
 const TYPE_MAP = {};
 DRUM_TYPES.forEach(t => TYPE_MAP[t.id] = t);
 
-// ─── STATE ───────────────────────────────────────────────────
+// Per-type default rotation (in degrees, applied to newly placed tokens)
+const typeRotations = {};
+DRUM_TYPES.forEach(t => typeRotations[t.id] = 0);
+
+// ─── STATE ────────────────────────────────────────────────────
 let mode = 'place';
 let selectedType = 'zuGu';
-let tokens = [];      // {id, typeId, x, y}
+let tokens = [];        // {id, typeId, x, y, rot}
 let history = [];
 let selectedIds = new Set();
 let gridEnabled = false;
-let gridSize = 40;
+let gridSize = 20;      // halved from 40
 let nextId = 1;
-let dragging = null;  // {id, ox, oy}
-let selBox = null;    // {sx,sy,ex,ey}
-let saves = JSON.parse(localStorage.getItem('drumSaves') || '[]');
+let dragging = null;
+let selBox = null;
+let saves = [];
+try { saves = JSON.parse(localStorage.getItem('drumSaves2') || '[]'); } catch(e){}
 
 const stage = document.getElementById('stage');
 const selRect = document.getElementById('sel-rect');
@@ -713,17 +575,40 @@ function buildPalette() {
     const div = document.createElement('div');
     div.className = 'drum-item' + (t.id === selectedType ? ' active' : '');
     div.dataset.id = t.id;
-    div.innerHTML = `<div class="icon">${t.svg(26)}</div><div class="name">${t.name}</div>`;
-    div.addEventListener('click', () => selectType(t.id));
+    div.innerHTML = `
+      <div class="icon" id="pal-icon-${t.id}">${t.svg(26, typeRotations[t.id])}</div>
+      <div class="label-row">
+        <div class="name">${t.name}</div>
+        <div class="drum-rot-controls">
+          <button class="rot-btn" title="逆时针45°" onclick="rotateType('${t.id}',-45,event)">↺</button>
+          <span class="rot-display" id="rot-disp-${t.id}">${typeRotations[t.id]}°</span>
+          <button class="rot-btn" title="顺时针45°" onclick="rotateType('${t.id}',45,event)">↻</button>
+        </div>
+      </div>`;
+    div.addEventListener('click', (e) => {
+      // don't trigger if clicking rotation buttons
+      if (e.target.classList.contains('rot-btn')) return;
+      selectType(t.id);
+    });
     pal.appendChild(div);
   });
+}
+
+function rotateType(typeId, delta, e) {
+  if (e) e.stopPropagation();
+  typeRotations[typeId] = ((typeRotations[typeId] + delta) % 360 + 360) % 360;
+  // update palette icon
+  const icon = document.getElementById('pal-icon-' + typeId);
+  if (icon) icon.innerHTML = TYPE_MAP[typeId].svg(26, typeRotations[typeId]);
+  const disp = document.getElementById('rot-disp-' + typeId);
+  if (disp) disp.textContent = typeRotations[typeId] + '°';
 }
 
 function buildLegend() {
   const el = document.getElementById('legend-items');
   el.innerHTML = DRUM_TYPES.map(t => `
     <div class="legend-item">
-      <div class="icon">${t.svg(24)}</div>
+      <div class="icon">${t.svg(24, 0)}</div>
       <span>${t.name}</span>
     </div>`).join('');
 }
@@ -743,8 +628,25 @@ function setMode(m) {
     const b = document.getElementById('btn-' + x);
     if (b) b.classList.toggle('active', x === m);
   });
-  selectedIds.clear();
-  renderTokens();
+  if (m !== 'select') { selectedIds.clear(); renderTokens(); }
+}
+
+// ─── ROTATE SELECTED ──────────────────────────────────────────
+function rotateSelected() {
+  if (!selectedIds.size) {
+    toast('请先选择符号（切换至"选择"模式框选）');
+    return;
+  }
+  pushHistory();
+  selectedIds.forEach(id => {
+    const tok = tokens.find(t => t.id === id);
+    if (tok) {
+      tok.rot = ((tok.rot || 0) + 45) % 360;
+      const el = document.getElementById('tok-' + tok.id);
+      if (el) el.innerHTML = TYPE_MAP[tok.typeId].svg(30, tok.rot);
+    }
+  });
+  toast('已旋转 +45°');
 }
 
 // ─── STAGE RESIZE ─────────────────────────────────────────────
@@ -770,7 +672,7 @@ function drawGrid() {
   const ctx = go.getContext('2d');
   ctx.clearRect(0, 0, go.width, go.height);
   if (!gridEnabled) return;
-  ctx.strokeStyle = 'rgba(184,134,11,.18)';
+  ctx.strokeStyle = 'rgba(184,134,11,.2)';
   ctx.lineWidth = 1;
   for (let x = 0; x <= go.width; x += gridSize) {
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, go.height); ctx.stroke();
@@ -804,14 +706,11 @@ function onStageDown(e) {
   if (mode === 'place') {
     const snapped = snapXY(x, y);
     pushHistory();
-    addToken(selectedType, snapped.x, snapped.y);
+    addToken(selectedType, snapped.x, snapped.y, typeRotations[selectedType]);
   } else if (mode === 'select') {
-    // start selection box
     selBox = {sx: x, sy: y, ex: x, ey: y};
     selRect.style.display = 'block';
     updateSelRect();
-  } else if (mode === 'erase') {
-    // handled by token click
   }
 }
 
@@ -823,7 +722,8 @@ function onStageMove(e) {
   }
   if (dragging) {
     const {x, y} = stagePos(e);
-    const snapped = snapXY(x + dragging.ox, y + dragging.oy);
+    const raw = {x: x + dragging.ox, y: y + dragging.oy};
+    const snapped = snapXY(raw.x, raw.y);
     const sw = parseInt(stage.style.width);
     const sh = parseInt(stage.style.height);
     const tok = tokens.find(t => t.id === dragging.id);
@@ -868,8 +768,8 @@ function updateSelRect() {
 }
 
 // ─── TOKEN MANAGEMENT ─────────────────────────────────────────
-function addToken(typeId, x, y) {
-  const tok = {id: nextId++, typeId, x, y};
+function addToken(typeId, x, y, rot=0) {
+  const tok = {id: nextId++, typeId, x, y, rot};
   tokens.push(tok);
   renderToken(tok);
   updateStats();
@@ -877,12 +777,11 @@ function addToken(typeId, x, y) {
 
 function renderToken(tok) {
   const el = document.createElement('div');
-  el.className = 'drum-token';
+  el.className = 'drum-token' + (selectedIds.has(tok.id) ? ' selected' : '');
   el.id = 'tok-' + tok.id;
   el.style.left = tok.x + 'px';
   el.style.top = tok.y + 'px';
-  el.innerHTML = TYPE_MAP[tok.typeId].svg(30);
-  el.classList.toggle('selected', selectedIds.has(tok.id));
+  el.innerHTML = TYPE_MAP[tok.typeId].svg(30, tok.rot || 0);
 
   el.addEventListener('mousedown', ev => {
     ev.stopPropagation();
@@ -892,24 +791,13 @@ function renderToken(tok) {
       return;
     }
     if (mode === 'select') {
-      selectedIds.clear();
-      selectedIds.add(tok.id);
-      renderTokens();
+      if (!selectedIds.has(tok.id)) { selectedIds.clear(); selectedIds.add(tok.id); renderTokens(); }
       return;
     }
     if (mode === 'place') {
-      // drag
       const {x, y} = stagePos(ev);
       dragging = {id: tok.id, ox: tok.x - x, oy: tok.y - y};
       pushHistory();
-    }
-  });
-
-  // keyboard delete
-  el.addEventListener('keydown', ev => {
-    if (ev.key === 'Delete' || ev.key === 'Backspace') {
-      pushHistory();
-      removeToken(tok.id);
     }
   });
 
@@ -925,7 +813,6 @@ function removeToken(id) {
 }
 
 function renderTokens() {
-  // clear all token elements
   stage.querySelectorAll('.drum-token').forEach(e => e.remove());
   tokens.forEach(tok => renderToken(tok));
 }
@@ -947,14 +834,11 @@ function updateStats() {
   el.innerHTML = DRUM_TYPES.map(t => `
     <div class="stat-row">
       <span class="stat-label">
-        <span class="dot" style="color:${t.color};border-color:${t.color}"></span>
-        ${t.name}
+        <span class="dot" style="color:${t.color};border-color:${t.color}"></span>${t.name}
       </span>
       <span class="stat-count" style="color:${t.color}">${counts[t.id]}</span>
     </div>`).join('');
   document.getElementById('total-count').textContent = tokens.length;
-
-  // sync title
   const nm = document.getElementById('formation-name').value;
   document.getElementById('stage-title').textContent = nm;
 }
@@ -964,46 +848,45 @@ document.getElementById('formation-name').addEventListener('input', updateStats)
 // ─── HISTORY / UNDO ───────────────────────────────────────────
 function pushHistory() {
   history.push(JSON.stringify(tokens.map(t => ({...t}))));
-  if (history.length > 60) history.shift();
+  if (history.length > 80) history.shift();
 }
 
 function undo() {
   if (!history.length) return;
   const prev = JSON.parse(history.pop());
   tokens = prev;
-  // restore nextId
   if (tokens.length) nextId = Math.max(...tokens.map(t => t.id)) + 1;
   renderTokens();
   updateStats();
   toast('已撤销');
 }
 
-// keyboard undo
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
-  if (e.key === 'Delete' || e.key === 'Backspace') {
-    if (selectedIds.size) {
-      pushHistory();
-      selectedIds.forEach(id => {
-        tokens = tokens.filter(t => t.id !== id);
-        const el = document.getElementById('tok-' + id);
-        if (el) el.remove();
-      });
-      selectedIds.clear();
-      updateStats();
-    }
+  if ((e.key === 'Delete' || e.key === 'Backspace') && selectedIds.size) {
+    pushHistory();
+    selectedIds.forEach(id => {
+      tokens = tokens.filter(t => t.id !== id);
+      const el = document.getElementById('tok-' + id);
+      if (el) el.remove();
+    });
+    selectedIds.clear();
+    updateStats();
   }
+  // R key: rotate selected
+  if (e.key === 'r' || e.key === 'R') { rotateSelected(); }
 });
 
 // ─── SAVE / LOAD ──────────────────────────────────────────────
 function openSaveModal() {
   document.getElementById('save-name-input').value = document.getElementById('formation-name').value;
   document.getElementById('save-modal').classList.add('open');
+  setTimeout(() => document.getElementById('save-name-input').focus(), 50);
 }
 function closeSaveModal() {
   document.getElementById('save-modal').classList.remove('open');
 }
-function saveFormation() {
+function confirmSave() {
   const name = document.getElementById('save-name-input').value.trim() || '未命名';
   const entry = {
     name,
@@ -1015,8 +898,8 @@ function saveFormation() {
   };
   saves = saves.filter(s => s.name !== name);
   saves.unshift(entry);
-  if (saves.length > 20) saves.pop();
-  localStorage.setItem('drumSaves', JSON.stringify(saves));
+  if (saves.length > 30) saves.pop();
+  try { localStorage.setItem('drumSaves2', JSON.stringify(saves)); } catch(e){}
   closeSaveModal();
   renderSaved();
   toast('「' + name + '」已保存');
@@ -1026,7 +909,7 @@ function loadSaved(name) {
   const entry = saves.find(s => s.name === name);
   if (!entry) return;
   pushHistory();
-  tokens = entry.tokens.map(t => ({...t}));
+  tokens = entry.tokens.map(t => ({...t, rot: t.rot || 0}));
   if (entry.stageW) document.getElementById('stage-w').value = entry.stageW;
   if (entry.stageH) document.getElementById('stage-h').value = entry.stageH;
   if (entry.notes) document.querySelector('.notes-panel textarea').value = entry.notes;
@@ -1039,187 +922,79 @@ function loadSaved(name) {
 }
 
 function deleteSaved(name) {
+  if (!confirm('删除「' + name + '」？')) return;
   saves = saves.filter(s => s.name !== name);
-  localStorage.setItem('drumSaves', JSON.stringify(saves));
+  try { localStorage.setItem('drumSaves2', JSON.stringify(saves)); } catch(e){}
   renderSaved();
 }
 
 function renderSaved() {
   const el = document.getElementById('saved-list');
-  if (!saves.length) { el.innerHTML = '<div style="font-size:.78rem;color:#a09070;padding:4px 2px">暂无保存记录</div>'; return; }
-  el.innerHTML = saves.map(s => `
-    <div class="saved-item">
-      <button class="load" onclick="loadSaved('${s.name.replace(/'/g,"\\'")}')">📋 ${s.name}</button>
-      <button class="del" onclick="deleteSaved('${s.name.replace(/'/g,"\\'")}')">×</button>
-    </div>`).join('');
-}
-
-// ─── PRESETS ──────────────────────────────────────────────────
-function loadPreset(name) {
-  pushHistory();
-  const W = parseInt(stage.style.width) || 800;
-  const H = parseInt(stage.style.height) || 500;
-  const cx = W / 2;
-  tokens = [];
-  stage.querySelectorAll('.drum-token').forEach(e => e.remove());
-  nextId = 1;
-
-  if (name === 'liChao') {
-    // 离巢 — from the image (top diagram, no drummers)
-    const layout = [
-      // 坐鼓 red row near top
-      ...[-120,-60,0,60].map(dx => ({typeId:'zuGu', x:cx+dx, y:80})),
-      // 侧鼓 green middle sides
-      ...[-160,-120,-80].map(dx => ({typeId:'ceGu', x:cx+dx, y:150})),
-      ...[80,120,160].map(dx => ({typeId:'ceGu', x:cx+dx, y:150})),
-      ...[-140,-100].map(dx => ({typeId:'ceGu', x:cx+dx, y:200})),
-      ...[100,140].map(dx => ({typeId:'ceGu', x:cx+dx, y:200})),
-      // 平鼓 black center & bottom
-      [{typeId:'pingGu', x:cx, y:160}],
-      [{typeId:'pingGu', x:cx-20, y:210},{typeId:'pingGu', x:cx+20, y:210}],
-      ...[-120,-80,-40,0,40,80,120].map(dx => ({typeId:'pingGu', x:cx+dx, y:270})),
-      // 战鼓 blue bottom row
-      ...[-60,-20,20,60].map(dx => ({typeId:'zhanGu', x:cx+dx, y:330})),
-    ].flat();
-    layout.forEach(t => { tokens.push({id:nextId++, ...t}); });
-  } else if (name === 'basic') {
-    // 基础站位 — circles + triangles
-    const layout = [
-      ...[-120,-60,0,60].map(dx => ({typeId:'zuGu', x:cx+dx, y:70})),
-      ...[-60,-20,20,60].map(dx => ({typeId:'guShou', x:cx+dx, y:110})),
-      ...[-160,-120,-80].map(dx => ({typeId:'ceGu', x:cx+dx, y:160})),
-      ...[-160,-120,-80].map(dx => ({typeId:'guShou', x:cx+dx-20, y:160})),
-      ...[80,120,160].map(dx => ({typeId:'ceGu', x:cx+dx, y:160})),
-      ...[80,120,160].map(dx => ({typeId:'guShou', x:cx+dx+20, y:160})),
-      [{typeId:'pingGu', x:cx, y:175}],
-      [{typeId:'guShou', x:cx, y:215}],
-      ...[-80,-40,0,40,80,120].map(dx => ({typeId:'pingGu', x:cx+dx-20, y:250})),
-      ...[-80,-40,0,40,80,120].map(dx => ({typeId:'guShou', x:cx+dx-20, y:290})),
-      ...[-60,-20,20,60].map(dx => ({typeId:'zhanGu', x:cx+dx, y:340})),
-      ...[-40,0,40].map(dx => ({typeId:'guShou', x:cx+dx, y:380})),
-    ].flat();
-    layout.forEach(t => { tokens.push({id:nextId++, ...t}); });
-  } else if (name === 'double') {
-    // 双鼓站位
-    const layout = [
-      ...[cx-120, cx-60, cx, cx+60, cx+120].map(x => ({typeId:'zuGu', x, y:70})),
-      // side drums with extra markers
-      ...[-160,-120,-80].map(dx => ({typeId:'ceGu', x:cx+dx, y:155})),
-      ...[80,120,160].map(dx => ({typeId:'ceGu', x:cx+dx, y:155})),
-      [{typeId:'pingGu', x:cx, y:170}],
-      [{typeId:'pingGu', x:cx-30, y:220},{typeId:'pingGu', x:cx+30, y:220}],
-      [{typeId:'guShou', x:cx, y:225}],
-      ...[-100,-60,-20,20,60,100].map(dx => ({typeId:'pingGu', x:cx+dx, y:280})),
-      ...[-80,-40,0,40,80].map(dx => ({typeId:'guShou', x:cx+dx, y:320})),
-      ...[-60,-20,20,60].map(dx => ({typeId:'zhanGu', x:cx+dx, y:365})),
-      ...[-40,0,40].map(dx => ({typeId:'guShou', x:cx+dx, y:405})),
-    ].flat();
-    layout.forEach(t => { tokens.push({id:nextId++, ...t}); });
-  } else if (name === 'expand') {
-    // 展翼阵型
-    for (let i = -3; i <= 3; i++) tokens.push({id:nextId++, typeId:'zuGu', x:cx+i*55, y:70});
-    for (let i = -4; i <= 4; i++) tokens.push({id:nextId++, typeId:'pingGu', x:cx+i*50, y:145});
-    for (let i = -3; i <= 3; i++) tokens.push({id:nextId++, typeId:'ceGu', x:cx+i*55, y:220});
-    for (let i = -2; i <= 2; i++) tokens.push({id:nextId++, typeId:'zhanGu', x:cx+i*60, y:295});
-    for (let i = -3; i <= 3; i++) tokens.push({id:nextId++, typeId:'guShou', x:cx+i*55, y:370});
+  if (!saves.length) {
+    el.innerHTML = '<div style="font-size:.78rem;color:#a09070;padding:4px 2px">暂无保存记录<br>编排完成后点击「保存阵型」</div>';
+    return;
   }
-
-  renderTokens();
-  updateStats();
-  toast('已加载预设：' + {liChao:'离巢',basic:'基础站位',double:'双鼓站位',expand:'展翼'}[name]);
+  el.innerHTML = saves.map(s => {
+    const safeName = s.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return `<div class="saved-item">
+      <button class="load" onclick="loadSaved('${safeName}')">📋 ${s.name}<br><span style="font-size:.68rem;color:#9a8060">${s.date||''}</span></button>
+      <button class="del" onclick="deleteSaved('${safeName}')">×</button>
+    </div>`;
+  }).join('');
 }
 
-// ─── EXPORT ───────────────────────────────────────────────────
-function exportPNG() {
-  // Use html2canvas-style approach with SVG snapshot
+// ─── EXPORT SVG ───────────────────────────────────────────────
+function exportSVG() {
   const stageEl = document.getElementById('stage');
   const W = parseInt(stageEl.style.width);
   const H = parseInt(stageEl.style.height);
   const title = document.getElementById('formation-name').value;
+  const PAD = 60;
 
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-  svg.setAttribute('width', W + 100);
-  svg.setAttribute('height', H + 100);
-  svg.setAttribute('viewBox', `0 0 ${W+100} ${H+100}`);
+  let svgStr = `<svg width="${W+PAD*2}" height="${H+PAD*2+30}" viewBox="0 0 ${W+PAD*2} ${H+PAD*2+30}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="${W+PAD*2}" height="${H+PAD*2+30}" fill="#f7f3ec"/>
+  <text x="${(W+PAD*2)/2}" y="38" text-anchor="middle" font-size="22" font-weight="bold" fill="#1a1208" font-family="serif">${title}</text>
+  <rect x="${PAD}" y="${PAD}" width="${W}" height="${H}" fill="white" stroke="#1a1208" stroke-width="2.5"/>
+  <line x1="${PAD+W/2}" y1="${PAD}" x2="${PAD+W/2}" y2="${PAD+H}" stroke="rgba(44,44,44,.15)" stroke-width="1"/>`;
 
-  // background
-  const bg = document.createElementNS('http://www.w3.org/2000/svg','rect');
-  bg.setAttribute('width', W+100); bg.setAttribute('height', H+100);
-  bg.setAttribute('fill','#f7f3ec'); svg.appendChild(bg);
-
-  // title
-  const t = document.createElementNS('http://www.w3.org/2000/svg','text');
-  t.setAttribute('x', (W+100)/2); t.setAttribute('y', 38);
-  t.setAttribute('text-anchor','middle');
-  t.setAttribute('font-size','22'); t.setAttribute('font-weight','bold');
-  t.setAttribute('fill','#1a1208'); t.textContent = title; svg.appendChild(t);
-
-  // stage border
-  const border = document.createElementNS('http://www.w3.org/2000/svg','rect');
-  border.setAttribute('x',50); border.setAttribute('y',50);
-  border.setAttribute('width',W); border.setAttribute('height',H);
-  border.setAttribute('fill','white'); border.setAttribute('stroke','#1a1208'); border.setAttribute('stroke-width','2.5');
-  svg.appendChild(border);
-
-  // center line
-  const cl = document.createElementNS('http://www.w3.org/2000/svg','line');
-  cl.setAttribute('x1',(W+100)/2); cl.setAttribute('y1',50);
-  cl.setAttribute('x2',(W+100)/2); cl.setAttribute('y2',H+50);
-  cl.setAttribute('stroke','rgba(44,44,44,.15)'); cl.setAttribute('stroke-width','1');
-  svg.appendChild(cl);
-
-  // tokens
   const COLORS = {zuGu:'#c0392b',ceGu:'#27ae60',zhanGu:'#2980b9',pingGu:'#2c2c2c',guShou:'#2c2c2c',guanZhong:'#1a1208'};
+
   tokens.forEach(tok => {
-    const px = tok.x + 50;
-    const py = tok.y + 50;
+    const px = tok.x + PAD;
+    const py = tok.y + PAD;
+    const rot = tok.rot || 0;
+    const color = COLORS[tok.typeId];
+    const tr = `transform="rotate(${rot},${px},${py})"`;
     if (tok.typeId === 'guShou') {
-      const tri = document.createElementNS('http://www.w3.org/2000/svg','path');
-      tri.setAttribute('d', `M${px} ${py-13} L${px+12} ${py+10} L${px-12} ${py+10} Z`);
-      tri.setAttribute('fill','none'); tri.setAttribute('stroke', COLORS[tok.typeId]); tri.setAttribute('stroke-width','2.2');
-      svg.appendChild(tri);
+      svgStr += `<path d="M${px} ${py-13} L${px+12} ${py+10} L${px-12} ${py+10} Z" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" ${tr}/>`;
     } else if (tok.typeId === 'guanZhong') {
-      const arr = document.createElementNS('http://www.w3.org/2000/svg','path');
-      arr.setAttribute('d', `M${px} ${py+14} L${px-10} ${py+2} L${px-4} ${py+2} L${px-4} ${py-14} L${px+4} ${py-14} L${px+4} ${py+2} L${px+10} ${py+2} Z`);
-      arr.setAttribute('fill','none'); arr.setAttribute('stroke', COLORS[tok.typeId]); arr.setAttribute('stroke-width','2.2');
-      svg.appendChild(arr);
+      svgStr += `<path d="M${px} ${py+14} L${px-10} ${py+2} L${px-4} ${py+2} L${px-4} ${py-14} L${px+4} ${py-14} L${px+4} ${py+2} L${px+10} ${py+2} Z" fill="none" stroke="${color}" stroke-width="2.2" ${tr}/>`;
     } else {
-      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      c.setAttribute('cx', px); c.setAttribute('cy', py); c.setAttribute('r', 13);
-      c.setAttribute('fill','none'); c.setAttribute('stroke', COLORS[tok.typeId]); c.setAttribute('stroke-width','2.2');
-      svg.appendChild(c);
+      svgStr += `<circle cx="${px}" cy="${py}" r="13" fill="none" stroke="${color}" stroke-width="2.2" ${tr}/>`;
     }
   });
 
   // legend
-  const legendY = H + 62;
-  const types = Object.entries(COLORS);
-  types.forEach(([id, color], i) => {
-    const lx = 55 + i * 110;
-    if (id === 'guShou') {
-      const tri = document.createElementNS('http://www.w3.org/2000/svg','path');
-      tri.setAttribute('d',`M${lx+8} ${legendY-8} L${lx+16} ${legendY+6} L${lx} ${legendY+6} Z`);
-      tri.setAttribute('fill','none');tri.setAttribute('stroke',color);tri.setAttribute('stroke-width','1.8');
-      svg.appendChild(tri);
+  const ly = PAD + H + 20;
+  DRUM_TYPES.forEach((t, i) => {
+    const lx = PAD + i * 105;
+    const color = COLORS[t.id];
+    if (t.id === 'guShou') {
+      svgStr += `<path d="M${lx+8} ${ly-7} L${lx+15} ${ly+6} L${lx+1} ${ly+6} Z" fill="none" stroke="${color}" stroke-width="1.8"/>`;
     } else {
-      const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      c.setAttribute('cx',lx+8);c.setAttribute('cy',legendY);c.setAttribute('r',7);
-      c.setAttribute('fill','none');c.setAttribute('stroke',color);c.setAttribute('stroke-width','1.8');
-      svg.appendChild(c);
+      svgStr += `<circle cx="${lx+8}" cy="${ly}" r="7" fill="none" stroke="${color}" stroke-width="1.8"/>`;
     }
-    const lt = document.createElementNS('http://www.w3.org/2000/svg','text');
-    lt.setAttribute('x',lx+20);lt.setAttribute('y',legendY+5);
-    lt.setAttribute('font-size','12');lt.setAttribute('fill','#1a1208');
-    lt.textContent = TYPE_MAP[id].name; svg.appendChild(lt);
+    svgStr += `<text x="${lx+20}" y="${ly+5}" font-size="11" fill="#1a1208" font-family="sans-serif">${t.name}</text>`;
   });
 
-  const blob = new Blob([svg.outerHTML], {type:'image/svg+xml'});
+  svgStr += '</svg>';
+
+  const blob = new Blob([svgStr], {type:'image/svg+xml'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = title + '.svg'; a.click();
   URL.revokeObjectURL(url);
-  toast('已导出为 SVG');
+  toast('已导出 SVG');
 }
 
 // ─── TOAST ────────────────────────────────────────────────────
@@ -1227,12 +1002,11 @@ function toast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2200);
+  setTimeout(() => el.classList.remove('show'), 2400);
 }
 
 // ─── BOOT ─────────────────────────────────────────────────────
 init();
-loadPreset('liChao');
 </script>
 </body>
 </html>
