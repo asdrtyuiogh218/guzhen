@@ -349,6 +349,52 @@
     resize:vertical; color:var(--ink); background:#fff;
   }
 
+  /* annotation items on stage */
+  .annot-box {
+    position: absolute;
+    border: 2px dashed #b8860b;
+    background: rgba(184,134,11,.04);
+    cursor: move;
+    box-sizing: border-box;
+    min-width: 30px;
+    min-height: 20px;
+  }
+  .annot-box:hover { background: rgba(184,134,11,.09); }
+  .annot-box.selected { border-color: #d4a017; box-shadow: 0 0 0 2px rgba(184,134,11,.4); }
+  .annot-box .annot-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .78rem;
+    color: #5a3e00;
+    padding: 4px 6px;
+    pointer-events: none;
+    word-break: break-all;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .annot-box .resize-handle {
+    position: absolute;
+    right: -5px; bottom: -5px;
+    width: 10px; height: 10px;
+    background: #b8860b;
+    border-radius: 2px;
+    cursor: se-resize;
+    opacity: .7;
+  }
+  .annot-box .resize-handle:hover { opacity: 1; }
+  /* drawing ghost rect */
+  #annot-draw-ghost {
+    position: absolute;
+    border: 2px dashed #b8860b;
+    background: rgba(184,134,11,.07);
+    pointer-events: none;
+    display: none;
+    box-sizing: border-box;
+  }
+
   #toast {
     position: fixed; bottom: 28px; left: 50%;
     transform: translateX(-50%) translateY(80px);
@@ -452,6 +498,7 @@
           <div id="center-label">Center</div>
           <canvas id="grid-overlay"></canvas>
           <div id="sel-rect"></div>
+          <div id="annot-draw-ghost"></div>
         </div>
       </div>
     </div>
@@ -532,6 +579,14 @@ const DRUM_TYPES = [
       <path d="M16 30 L4 16 L10 16 L10 2 L22 2 L22 16 L28 16 Z" fill="none" stroke="#1a1208" stroke-width="2.5" stroke-linejoin="round" transform="rotate(${rot},16,16)"/>
     </svg>`
   },
+  {
+    id: 'zhuShi', name: '注释', color: '#b8860b', isAnnot: true,
+    svg: (s=32, rot=0) => `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="7" width="26" height="18" rx="2" fill="none" stroke="#b8860b" stroke-width="2" stroke-dasharray="4,3"/>
+      <line x1="9" y1="14" x2="23" y2="14" stroke="#b8860b" stroke-width="1.5" stroke-dasharray="2,2"/>
+      <line x1="9" y1="19" x2="19" y2="19" stroke="#b8860b" stroke-width="1.5" stroke-dasharray="2,2"/>
+    </svg>`
+  },
 ];
 
 const TYPE_MAP = {};
@@ -555,6 +610,13 @@ let selBox = null;
 let saves = [];
 try { saves = JSON.parse(localStorage.getItem('drumSaves2') || '[]'); } catch(e){}
 
+// annotation state
+let annots = [];     // {id, x, y, w, h, text}
+let nextAnnotId = 1;
+let annotDrawing = null;  // {sx,sy} while dragging to create
+let annotResizing = null; // {id, startX, startY, startW, startH}
+let annotDragging = null; // {id, ox, oy}
+
 const stage = document.getElementById('stage');
 const selRect = document.getElementById('sel-rect');
 
@@ -575,18 +637,19 @@ function buildPalette() {
     const div = document.createElement('div');
     div.className = 'drum-item' + (t.id === selectedType ? ' active' : '');
     div.dataset.id = t.id;
-    div.innerHTML = `
-      <div class="icon" id="pal-icon-${t.id}">${t.svg(26, typeRotations[t.id])}</div>
-      <div class="label-row">
-        <div class="name">${t.name}</div>
+    const rotControls = t.isAnnot ? '' : `
         <div class="drum-rot-controls">
           <button class="rot-btn" title="逆时针45°" onclick="rotateType('${t.id}',-45,event)">↺</button>
-          <span class="rot-display" id="rot-disp-${t.id}">${typeRotations[t.id]}°</span>
+          <span class="rot-display" id="rot-disp-${t.id}">${typeRotations[t.id]||0}°</span>
           <button class="rot-btn" title="顺时针45°" onclick="rotateType('${t.id}',45,event)">↻</button>
-        </div>
+        </div>`;
+    div.innerHTML = `
+      <div class="icon" id="pal-icon-${t.id}">${t.svg(26, typeRotations[t.id]||0)}</div>
+      <div class="label-row">
+        <div class="name">${t.name}</div>
+        ${rotControls}
       </div>`;
     div.addEventListener('click', (e) => {
-      // don't trigger if clicking rotation buttons
       if (e.target.classList.contains('rot-btn')) return;
       selectType(t.id);
     });
@@ -618,17 +681,27 @@ function selectType(id) {
   document.querySelectorAll('.drum-item').forEach(d => {
     d.classList.toggle('active', d.dataset.id === id);
   });
-  if (mode !== 'erase') setMode('place');
+  const t = TYPE_MAP[id];
+  if (t && t.isAnnot) {
+    setMode('annot');
+  } else {
+    if (mode !== 'erase') setMode('place');
+  }
 }
 
 function setMode(m) {
   mode = m;
   stage.className = 'mode-' + m;
+  // cursor
+  if (m === 'annot') stage.style.cursor = 'crosshair';
+  else stage.style.cursor = '';
   ['place','select','erase'].forEach(x => {
     const b = document.getElementById('btn-' + x);
     if (b) b.classList.toggle('active', x === m);
   });
   if (m !== 'select') { selectedIds.clear(); renderTokens(); }
+  // hide ghost
+  document.getElementById('annot-draw-ghost').style.display = 'none';
 }
 
 // ─── ROTATE SELECTED ──────────────────────────────────────────
@@ -711,6 +784,12 @@ function onStageDown(e) {
     selBox = {sx: x, sy: y, ex: x, ey: y};
     selRect.style.display = 'block';
     updateSelRect();
+  } else if (mode === 'annot') {
+    annotDrawing = {sx: x, sy: y};
+    const ghost = document.getElementById('annot-draw-ghost');
+    ghost.style.display = 'block';
+    ghost.style.left = x+'px'; ghost.style.top = y+'px';
+    ghost.style.width = '0px'; ghost.style.height = '0px';
   }
 }
 
@@ -734,6 +813,38 @@ function onStageMove(e) {
       if (el) { el.style.left = tok.x + 'px'; el.style.top = tok.y + 'px'; }
     }
   }
+  if (mode === 'annot' && annotDrawing) {
+    const {x, y} = stagePos(e);
+    const ghost = document.getElementById('annot-draw-ghost');
+    const l = Math.min(annotDrawing.sx, x);
+    const t = Math.min(annotDrawing.sy, y);
+    const w = Math.abs(x - annotDrawing.sx);
+    const h = Math.abs(y - annotDrawing.sy);
+    ghost.style.left = l+'px'; ghost.style.top = t+'px';
+    ghost.style.width = w+'px'; ghost.style.height = h+'px';
+  }
+  if (annotDragging) {
+    const {x, y} = stagePos(e);
+    const an = annots.find(a => a.id === annotDragging.id);
+    if (an) {
+      const sw = parseInt(stage.style.width);
+      const sh = parseInt(stage.style.height);
+      an.x = Math.max(0, Math.min(sw - an.w, x + annotDragging.ox));
+      an.y = Math.max(0, Math.min(sh - an.h, y + annotDragging.oy));
+      const el = document.getElementById('annot-' + an.id);
+      if (el) { el.style.left = an.x+'px'; el.style.top = an.y+'px'; }
+    }
+  }
+  if (annotResizing) {
+    const {x, y} = stagePos(e);
+    const an = annots.find(a => a.id === annotResizing.id);
+    if (an) {
+      an.w = Math.max(40, annotResizing.startW + (x - annotResizing.startX));
+      an.h = Math.max(24, annotResizing.startH + (y - annotResizing.startY));
+      const el = document.getElementById('annot-' + an.id);
+      if (el) { el.style.width = an.w+'px'; el.style.height = an.h+'px'; }
+    }
+  }
 }
 
 function onStageUp(e) {
@@ -754,7 +865,28 @@ function onStageUp(e) {
     selRect.style.display = 'none';
     renderTokens();
   }
+  if (mode === 'annot' && annotDrawing) {
+    const {x, y} = stagePos(e);
+    const w = Math.abs(x - annotDrawing.sx);
+    const h = Math.abs(y - annotDrawing.sy);
+    const ghost = document.getElementById('annot-draw-ghost');
+    ghost.style.display = 'none';
+    if (w > 10 && h > 10) {
+      pushHistory();
+      const an = {
+        id: nextAnnotId++,
+        x: Math.min(annotDrawing.sx, x),
+        y: Math.min(annotDrawing.sy, y),
+        w, h, text: ''
+      };
+      annots.push(an);
+      renderAnnot(an);
+    }
+    annotDrawing = null;
+  }
   dragging = null;
+  annotDragging = null;
+  annotResizing = null;
 }
 
 function updateSelRect() {
@@ -815,6 +947,91 @@ function removeToken(id) {
 function renderTokens() {
   stage.querySelectorAll('.drum-token').forEach(e => e.remove());
   tokens.forEach(tok => renderToken(tok));
+}
+
+// ─── ANNOTATION MANAGEMENT ────────────────────────────────────
+function renderAnnot(an) {
+  const el = document.createElement('div');
+  el.className = 'annot-box';
+  el.id = 'annot-' + an.id;
+  el.style.left = an.x + 'px';
+  el.style.top  = an.y + 'px';
+  el.style.width  = an.w + 'px';
+  el.style.height = an.h + 'px';
+
+  const textEl = document.createElement('div');
+  textEl.className = 'annot-text';
+  textEl.textContent = an.text;
+  el.appendChild(textEl);
+
+  const handle = document.createElement('div');
+  handle.className = 'resize-handle';
+  el.appendChild(handle);
+
+  // double-click to edit text
+  el.addEventListener('dblclick', ev => {
+    ev.stopPropagation();
+    const input = document.createElement('textarea');
+    input.value = an.text;
+    input.style.cssText = `
+      position:absolute; inset:0; width:100%; height:100%;
+      border:none; background:rgba(255,248,220,.9); resize:none;
+      font-size:.78rem; font-family:'Noto Sans SC',sans-serif;
+      color:#5a3e00; padding:4px 6px; outline:2px solid #b8860b;
+      box-sizing:border-box; border-radius:0;
+    `;
+    el.appendChild(input);
+    input.focus(); input.select();
+    textEl.style.display = 'none';
+    handle.style.display = 'none';
+
+    const finish = () => {
+      an.text = input.value;
+      textEl.textContent = an.text;
+      textEl.style.display = '';
+      handle.style.display = '';
+      input.remove();
+    };
+    input.addEventListener('blur', finish);
+    input.addEventListener('keydown', ev2 => {
+      if (ev2.key === 'Escape') { input.value = an.text; finish(); }
+      ev2.stopPropagation();
+    });
+  });
+
+  // drag to move
+  el.addEventListener('mousedown', ev => {
+    if (ev.target === handle) return; // handled by resize
+    ev.stopPropagation();
+    if (mode === 'erase') { pushHistory(); removeAnnot(an.id); return; }
+    const {x, y} = stagePos(ev);
+    annotDragging = {id: an.id, ox: an.x - x, oy: an.y - y};
+    pushHistory();
+  });
+
+  // resize handle
+  handle.addEventListener('mousedown', ev => {
+    ev.stopPropagation();
+    const {x, y} = stagePos(ev);
+    annotResizing = {id: an.id, startX: x, startY: y, startW: an.w, startH: an.h};
+    pushHistory();
+  });
+
+  // insert before drum tokens so drums appear on top
+  const firstToken = stage.querySelector('.drum-token');
+  if (firstToken) stage.insertBefore(el, firstToken);
+  else stage.appendChild(el);
+}
+
+function removeAnnot(id) {
+  annots = annots.filter(a => a.id !== id);
+  const el = document.getElementById('annot-' + id);
+  if (el) el.remove();
+}
+
+function renderAllAnnots() {
+  stage.querySelectorAll('.annot-box').forEach(e => e.remove());
+  annots.forEach(an => renderAnnot(an));
 }
 
 function clearStage() {
